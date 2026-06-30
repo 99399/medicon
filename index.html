@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>めじこんさば</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        /* 🔵 サーバーアイコンのスタイル */
+        .server-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background-color: #2f3136; /* 画像がない時の背景色 */
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        p {
+            color: #aaaaaa;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* オンライン人数の表示スタイル */
+        .status-container {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            background: #252525;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot-online {
+            width: 8px;
+            height: 8px;
+            background-color: #23a55a;
+            border-radius: 50%;
+        }
+
+        .discord-btn {
+            background-color: #5865F2;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+            text-align: center;
+            margin-bottom: 15px; /* コピペボタンとの間に少し隙間をあける */
+        }
+
+        .discord-btn:hover {
+            background-color: #4752C4;
+            transform: translateY(-2px);
+        }
+
+        /* 🔵 コピペボタンのスタイル */
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #5865F2;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s;
+            padding: 5px 10px;
+        }
+        .copy-btn:hover {
+            color: #7289da;
+        }
+
+        @media (min-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            p { font-size: 1rem; }
+            .server-icon { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://i.imgur.com/B7UUQKA.jpeg" alt="めじこんさば アイコン" class="server-icon" id="server-logo">
+
+    <h1>めじこんさば</h1>
+
+    <p>めじこんさばのさいとらしいよ<br>連絡先 @xkzw,@pxho,@efqg</p>
+
+    <div class="status-container" id="discord-status">
+        <span style="color: #888;">情報を取得中...</span>
+    </div>
+
+    <a href="https://discord.gg/medicon" target="_blank" class="discord-btn">
+        めじこんさばにはいる
+    </a>
+
+    <button class="copy-btn" onclick="copyInviteLink(this)">りんくをこぴー</button>
+
+    <script>
+        const SERVER_ID = '1493270400316997642';
+        const INVITE_URL = 'https://discord.gg/medicon'; // コピーさせるURL
+
+        async function fetchDiscordStatus() {
+            try {
+                const response = await fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`);
+                if (!response.ok) throw new Error('取得失敗');
+                
+                const data = await response.json();
+                const onlineCount = data.presence_count ?? 0;
+                
+                document.getElementById('discord-status').innerHTML = `
+                    <div class="status-item">
+                        <span class="dot-online"></span>
+                        <span>おんらいん: <strong>${onlineCount}</strong>人</span>
+                    </div>
+                `;
+
+                // 💡 もしDiscordのウィジェットから直接サーバーアイコンを取得したい場合は、下の行のコメントアウト（//）を消してください
+                // document.getElementById('server-logo').src = `https://cdn.discordapp.com/icons/${SERVER_ID}/${data.instant_invite?.split('/').pop()}.png`;
+            } catch (error) {
+                document.getElementById('discord-status').innerHTML = `
+                    <span style="color: #ff4747; font-size: 0.8rem;">ステータスを取得できませんでした</span>
+                `;
+                console.error(error);
+            }
+        }
+
+        // 🔵 リンクをコピーするプログラム
+        function copyInviteLink(button) {
+            navigator.clipboard.writeText(INVITE_URL).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'こぴーできたよ！';
+                button.style.color = '#23a55a'; // 緑色にする
+                button.style.textDecoration = 'none';
+                
+                // 1.5秒後に元に戻す
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.style.color = '';
+                    button.style.textDecoration = '';
+                }, 1500);
+            }).catch(err => {
+                alert('コピーに失敗しました。手動でコピーしてください: ' + INVITE_URL);
+            });
+        }
+
+        fetchDiscordStatus();
+    </script>
+
+</body>
+</html>
