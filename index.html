@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>めじこんさば</title>
     <style>
+        /* 🎨 全体の背景を少し高級感のあるグラデーションに */
         body {
-            background-color: #1a1a1a;
+            background: radial-gradient(circle at center, #23272a 0%, #0f1112 100%);
             color: #ffffff;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -17,118 +18,171 @@
             padding: 20px;
             box-sizing: border-box;
             margin: 0;
+            overflow-x: hidden;
         }
 
-        /* 🔵 サーバーアイコンのスタイル */
+        /* 🔵 サーバーアイコン：光るエフェクト（グロウ効果）を追加 */
         .server-icon {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            background-color: #2f3136; /* 画像がない時の背景色 */
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        /* アイコンにマウスを載せると少し回転しながら大きくなる */
+        .server-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.8);
         }
 
         h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            letter-spacing: 3px;
             text-align: center;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #b9bbbe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         p {
-            color: #aaaaaa;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
+            color: #b9bbbe;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
             text-align: center;
-            line-height: 1.6;
+            line-height: 1.8;
+            max-width: 400px;
+        }
+        /* 連絡先のユーザー名を少し目立たせる */
+        p code {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 0 2px;
+            color: #e3e5e8;
         }
 
-        /* オンライン人数の表示スタイル */
+        /* 🟢 オンライン人数の表示（よりDiscordのUIに近いデザインに） */
         .status-container {
             display: flex;
             gap: 15px;
             font-size: 0.85rem;
-            margin-bottom: 25px;
-            background: #252525;
-            padding: 6px 16px;
+            margin-bottom: 30px;
+            background: rgba(47, 49, 54, 0.6);
+            backdrop-filter: blur(10px); /* 背景をぼかすおしゃれエフェクト */
+            padding: 8px 18px;
             border-radius: 20px;
-            border: 1px solid #333;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .status-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
+        /* オンラインの緑ドットをピコピコ光らせる（アニメーション） */
         .dot-online {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: #23a55a;
             border-radius: 50%;
+            position: relative;
+        }
+        .dot-online::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: #23a55a;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
 
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* 💜 Discordボタン：立体感と押し心地をアップ */
         .discord-btn {
             background-color: #5865F2;
             color: white;
             text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 32px;
+            border-radius: 12px;
             font-weight: bold;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
             text-align: center;
-            margin-bottom: 15px; /* コピペボタンとの間に少し隙間をあける */
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .discord-btn:hover {
             background-color: #4752C4;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(88, 101, 242, 0.6);
+        }
+        .discord-btn:active {
+            transform: translateY(-1px);
         }
 
-        /* 🔵 コピペボタンのスタイル */
+        /* 🔗 コピペボタン：ただのリンク文字から「静かなボタン」へ変更 */
         .copy-btn {
-            background: none;
-            border: none;
-            color: #5865F2;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b9bbbe;
             font-size: 0.8rem;
             cursor: pointer;
-            text-decoration: underline;
-            transition: color 0.2s;
-            padding: 5px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            padding: 6px 16px;
         }
         .copy-btn:hover {
-            color: #7289da;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
         }
 
         @media (min-width: 600px) {
-            h1 { font-size: 2.5rem; }
+            h1 { font-size: 2.8rem; }
             p { font-size: 1rem; }
-            .server-icon { width: 100px; height: 100px; }
+            .server-icon { width: 110px; height: 110px; }
         }
     </style>
 </head>
 <body>
 
-    <img src="https://i.imgur.com/B7UUQKA.jpeg" alt="めじこんさば アイコン" class="server-icon" id="server-logo">
+    <img src="https://i.imgur.com/B7UUQKA.jpeg" alt="" class="server-icon" id="server-logo">
 
     <h1>めじこんさばのさいと</h1>
 
-    <p>めじこんさばのさいとらしいよ<br>連絡先 @xkzw,@pxho,@efqg,@xjbz,@48244<br>@xkzwがめいんです<br>discordの4c配布してます<br>日本最大級のおーばーどーずこみゅにてぃ<br>さーばーたぐ"めじこん"つけれます！</p>
+    <p>
+        めじこんさばのさいとらしいよ<br>
+        連絡先 <code>@xkzw</code><code>@pxho</code><code><code>@efqg</code><code>@xjbz</code><code>@48244</code><br>
+        <code>@xkzw</code> がめいんです
+    </p>
 
     <div class="status-container" id="discord-status">
         <span style="color: #888;">情報を取得中...</span>
     </div>
 
     <a href="https://discord.gg/medicon" target="_blank" class="discord-btn">
-        めじこんさばにはいる
+        めじこ n さばにはいる
     </a>
 
     <button class="copy-btn" onclick="copyInviteLink(this)">りんくをこぴー</button>
 
     <script>
         const SERVER_ID = '1493270400316997642';
-        const INVITE_URL = 'https://discord.gg/medicon'; // コピーさせるURL
+        const INVITE_URL = 'https://discord.gg/medicon';
 
         async function fetchDiscordStatus() {
             try {
@@ -144,9 +198,6 @@
                         <span>おんらいん: <strong>${onlineCount}</strong>人</span>
                     </div>
                 `;
-
-                // 💡 もしDiscordのウィジェットから直接サーバーアイコンを取得したい場合は、下の行のコメントアウト（//）を消してください
-                // document.getElementById('server-logo').src = `https://cdn.discordapp.com/icons/${SERVER_ID}/${data.instant_invite?.split('/').pop()}.png`;
             } catch (error) {
                 document.getElementById('discord-status').innerHTML = `
                     <span style="color: #ff4747; font-size: 0.8rem;">ステータスを取得できませんでした</span>
@@ -155,22 +206,22 @@
             }
         }
 
-        // 🔵 リンクをコピーするプログラム
         function copyInviteLink(button) {
             navigator.clipboard.writeText(INVITE_URL).then(() => {
                 const originalText = button.innerText;
                 button.innerText = 'こぴーできたよ！';
-                button.style.color = '#23a55a'; // 緑色にする
-                button.style.textDecoration = 'none';
+                button.style.color = '#23a55a';
+                button.style.backgroundColor = 'rgba(35, 165, 90, 0.1)';
+                button.style.borderColor = '#23a55a';
                 
-                // 1.5秒後に元に戻す
                 setTimeout(() => {
                     button.innerText = originalText;
                     button.style.color = '';
-                    button.style.textDecoration = '';
+                    button.style.backgroundColor = '';
+                    button.style.borderColor = '';
                 }, 1500);
             }).catch(err => {
-                alert('コピーに失敗しました。手動でコピーしてください: ' + INVITE_URL);
+                alert('コピーに失敗しました: ' + INVITE_URL);
             });
         }
 
